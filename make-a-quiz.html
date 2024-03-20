@@ -1,11 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create a quiz</title>
+  <link rel="stylesheet" href="navbar.css">
+  <link rel="stylesheet" href="general.css">
+  <link rel="stylesheet" href="cards.css">
+  <link rel="stylesheet" href="make-a-quiz.css">
 </head>
 <body>
-  
+  <ul class="topnav">
+    <li><a  href="index.html">Home</a></li>
+    <li><a href="add-question.html">Add questions</a></li>
+    <li><a class="active" href="make-a-quiz.html">Create a quiz</a></li>
+    <li><a href="take-a-quiz.html">Take a quiz</a></li>
+    <li class="right"><a href="#about">About</a></li>
+  </ul>
+
+  <div class="questions">
+    <h2>Questions Bank</h2>
+    <h3>Click on a question to add it to the list</h3>
+
+    <div id="listNotInQuiz" class="cards"></div>
+
+  </div>
+  <div class="quiz">
+    <h2>The New Quiz (<label id="quizCardCount">0</label> questions)</h2>
+    <label for="quizTitle">Quiz title </label>
+    <input type="text" id="quizTitleText" name="quizTitle" required /><br />
+
+    <br />
+    <button onclick="saveChanges()">Save your changes</button>
+    <button onclick="saveQuiz()">Save this quiz and start a new one</button><br />
+    <p>If you want to remove a question from the quiz, you can click on the question here and it will be removed from the quiz.</p>
+
+    <div id="listInQuiz" class="cards"></div>
+  </div>
+  <script>
+    let host = "https://midterm-backend-svelet2.onrender.com";
+    let questions = [];
+
+    displayTheQuestions();
+
+    async function getAll() {
+      let response = await fetch(host + "/questions");
+      let result = await response.json();
+      return result;
+    }
+
+    async function getAllQuizzes() {
+      let response = await fetch(host + "/quizzes");
+      let result = await response.json();
+      return result;
+    }
+
+    async function displayTheQuestions() {
+      if (questions.length == 0) {
+        questions = await getAll();
+      }
+
+      let list = document.getElementById("listNotInQuiz");
+      list.innerHTML = "";
+
+      for (let question of questions) {
+        let div = document.createElement("div");
+        div.className = "card";
+        let innerHtml = `
+          <img src="http://localhost:8080/questions/${question.id}/image" alt="question" style="width:100%">
+          <div class="container">
+            <h4><b>${question.id}</b></h4> 
+            <p>${question.description}</p>
+            <form>
+              <input type="radio" id="q${question.id}ptionA" name="q2Answer" value="A">
+              <label for="q${question.id}ptionA">${question.choices[0]}</label><br>
+
+              <input type="radio" id="q${question.id}ptionB" name="q2Answer" value="B">
+              <label for="q${question.id}ptionB">${question.choices[1]}</label><br>
+
+              <input type="radio" id="q${question.id}ptionC" name="q2Answer" value="C">
+              <label for="q${question.id}ptionC">${question.choices[2]}</label><br>       
+            </form> 
+          </div>
+        `;
+        div.innerHTML = innerHtml;
+        list.appendChild(div);
+      }
+    }
+
+    async function saveChanges() {
+      let quizzes = await getAllQuizzes();
+      let quizTitle = document.getElementById("quizTitleText").value;
+      if (quizTitle == "") {
+        alert("Please enter a title for the quiz.");
+        return;
+      }
+      
+      let questions = document.querySelectorAll("#listInQuiz .card");
+      let questionIds = [];
+      for (let question of questions) {
+        let id = question.querySelector("h4").textContent;
+        questionIds.push(id);
+      }
+      let quiz = {};
+      quiz.title = quizTitle;
+      quiz.questionIds = questionIds;
+      for (let q of quizzes) {
+        if (q.title == quizTitle) {
+          quiz.id = q.id;
+          console.log(quiz);
+          return sendChangesPut(quiz);
+        }
+      }
+      console.log(quiz);
+      return sendChangesPost(quiz);
+    }
+
+    async function sendChangesPut(quiz){
+      let message = "";
+
+      let request = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(quiz),
+      };
+      let response = await fetch(host + "/quizzes/" + quiz.id, request);
+      if (response.status == 200) {
+        message = "The quiz: " + JSON.stringify(quiz) + " was updated successfully!";
+      } else {
+        console.log(response);
+        message = "Something went wrong! Quiz data was not saved.";
+      }
+      alert(message);
+      return message;
+    }
+
+    async function sendChangesPost(quiz) {
+      let message = "";
+
+      let request = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(quiz),
+      };
+      let response = await fetch(host + "/quizzes", request);
+      if (response.status == 200) {
+        let id = await response.json();
+        if (id) {
+          quiz.id = id;
+          message = "The quiz: " + JSON.stringify(quiz) + " was added successfully!";
+        } else {
+          console.log(response);
+          message = "Something went wrong! Quiz data was not saved.";
+        }
+        alert(message);
+      }
+      return message;
+    }
+
+    async function saveQuiz(){
+      let response = await saveChanges();
+      location.href = "make-a-quiz.html";
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      function updateCardCount() {
+        let cardCount = document.querySelectorAll('#listInQuiz .card').length;
+        document.getElementById('quizCardCount').textContent = cardCount;
+      }
+
+      document.getElementById('listNotInQuiz').addEventListener('click', function(event) {
+        let card = event.target.closest('.card');
+        if (card) {
+          // Remove the card from the questions bank
+          card.remove();
+          // Add the card to the quiz
+          document.getElementById('listInQuiz').appendChild(card);
+          updateCardCount();
+        }
+      });
+
+      document.getElementById('listInQuiz').addEventListener('click', function(event) {
+        let card = event.target.closest('.card');
+        if (card) {
+          // Remove the card from the quiz
+          card.remove();
+          // Add the card back to the questions bank
+          document.getElementById('listNotInQuiz').appendChild(card);
+          updateCardCount();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
