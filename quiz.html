@@ -27,6 +27,7 @@
 
     <div class="controls">
       <button onclick="prevQuestion()">Previous</button>
+      <p>Question <label id="currentQuestion"></label> of <label id="totalCount"></label></p>
       <button onclick="nextQuestion()">Next</button>
     </div>
 
@@ -45,6 +46,7 @@
     let userAnswers = [];
     let answers = [];
 
+    updateCurrentQuestion();
     displayTheQuestions();
 
     async function getQuiz() {
@@ -57,6 +59,7 @@
       if (currentQuiz == null) {
         currentQuiz = await getQuiz();
         questions = currentQuiz.questions;
+        document.getElementById("totalCount").textContent = questions.length;
       }
 
       let list = document.getElementById("quizQuestion");
@@ -117,12 +120,18 @@
       }
     }
 
+    function updateCurrentQuestion() {
+        document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+      }
+
     // Function to navigate to the previous question
     function prevQuestion() {
       if (currentQuestionIndex > 0) {
         currentQuestionIndex--;
         displayTheQuestions();
+        updateCurrentQuestion();
       }
+      
     }
 
     // Function to navigate to the next question
@@ -130,6 +139,7 @@
       if (currentQuestionIndex < questions.length - 1) {
         currentQuestionIndex++;
         displayTheQuestions();
+        updateCurrentQuestion();
       } else {
         // Display the score and make the top menu visible again
         displayScore();
