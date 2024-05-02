@@ -1,0 +1,47 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.product-container {
+  display: flex;
+  margin: 20px;
+}
+
+.product-image img {
+  max-width: 200px;
+  height: auto;
+  margin-right: 20px;
+}
+
+.product-info {
+  flex: 1;
+}
+
+#product-form {
+  display: flex;
+  flex-direction: column;
+}
+
+#product-form label {
+  margin-bottom: 5px;
+}
+
+#product-form input,
+#product-form select {
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+#add-to-basket {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+#add-to-basket:hover {
+  background-color: #45a049;
+}

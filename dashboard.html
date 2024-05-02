@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add a question</title>
+    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="general.css">
+    <link rel="stylesheet" href="cards.css">
+  </head>
+  <style>
+  </style>
+  <body>
+   <div class="navbar">
+    <a href="dashboard.html" class="navbar-brand">Brand</a>
+    <div class="navbar-icons">
+      <a href="#">Profile</a>
+      <a href="#">Help</a>
+      <a href="#">Track Order</a>
+      <a href="#" class="basket-icon">
+        <img src="basket-icon.png" alt="Basket" width="30">
+        <span class="basket-count">0</span>
+      </a>
+    </div>
+  </div>
+  
+
+  <div class="filter-bar">
+    <div>
+      <label for="flower-types">Flower Types:</label>
+      <select id="flower-types">
+        <option value="mixed">Mixed</option>
+        <option value="roses">Roses</option>
+        <option value="lilies">Lilies</option>
+        <option value="tulips">Tulips</option>
+        <option value="daisies">Daisies</option>
+      </select>
+    </div>
+    <div>
+      <label for="occasions">Occasions:</label>
+      <select id="occasions">
+        <option value="mothers-day">Mother's Day</option>
+        <option value="birthday">Birthday</option>
+        <option value="thank-you">Thank You</option>
+      </select>
+    </div>
+    <div>
+      <label for="colors">Colors:</label>
+      <select id="colors">
+        <option value="mixed">Mixed</option>
+        <option value="red">Red</option>
+        <option value="yellow">Yellow</option>
+        <option value="green">Green</option>
+        <option value="orange">Orange</option>
+      </select>
+    </div>
+    <div>
+      <label for="sorting">Sorting:</label>
+      <select id="sorting">
+        <option value="price-low-to-high">Price: Low to High</option>
+        <option value="price-high-to-low">Price: High to Low</option>
+      </select>
+    </div>
+  </div>
+    
+  </div>
+  <script src="configuration.js"></script>
+
+    <div id="list" class="cards"></div>
+
+    <script>
+      let host = "http://localhost:8080";
+      let flowers = [];
+      displayTheFlowers();
+
+      async function getAll() {
+        // const header = {"Authorization": `Bearer ${configuration.token()}`};
+        let response = await fetch(host + "/flowers");
+        if (response.status === 401) {
+              message = "You are not authorized to add a guitar. Please login and try again.";
+              logout();
+        } 
+        let result = await response.json();
+        return result;
+      }
+
+      async function displayTheFlowers() {
+        if (flowers.length == 0) {
+          flowers = await getAll();
+        }
+
+        let list = document.getElementById("list");
+        list.innerHTML = "";
+
+        for (let flower of flowers) {
+          let div = document.createElement("div");
+          div.className = "card";
+          div.dataset.flower = JSON.stringify(flower);
+          let innerHtml = `
+         
+        <img src="${host}/flowers/${flower.id}/image" alt="flower" style="width:100%">
+        <div class="container">
+          <h4><b>${flower.name}</b></h4> 
+          <p>from: $${flower.cost}</p>
+        </div>
+     
+            `;
+          div.innerHTML = innerHtml;
+          list.appendChild(div);
+        }
+      }
+
+      function updateBasketCount() {
+        const basketCount = document.querySelector('.basket-count');
+        const basket = JSON.parse(localStorage.getItem('basket')) || [];
+        basketCount.textContent = basket.length;
+    }
+
+    document.getElementById('list').addEventListener('click', function(event) {
+        let card = event.target.closest('.card');
+        if (card) {
+          let flowerData = JSON.parse(card.dataset.flower);
+          window.location.href = "addToBasket.html?flower=" + encodeURIComponent(JSON.stringify(flowerData));
+        }
+      });
+
+      document.addEventListener('DOMContentLoaded', function() {
+        updateBasketCount();
+      });
+
+    </script>
+  </body>
+</html>

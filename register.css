@@ -1,0 +1,79 @@
+/* Centered container */
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Make the container fill the entire viewport height */
+    background-color: #ffffff; /* Light pink background color */
+}
+
+/* Style the form container */
+.container {
+    width: 350px; /* Set the width of the form container */
+    padding: 20px; /* Add some padding */
+    background-color: #fff; /* White background color */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Add a shadow effect */
+}
+
+/* Cute form style */
+.cute-form h1 {
+    color: #ff6b81; /* Pink font color */
+}
+
+.cute-form input[type="text"],
+.cute-form input[type="password"],
+.cute-form input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 5px; /* Rounded corners */
+}
+
+.cute-form input[type="text"]:focus,
+.cute-form input[type="password"]:focus,
+.cute-form input[type="email"]:focus {
+    outline: none;
+    border-color: #ff6b81; /* Pink border color on focus */
+}
+
+.cute-form .clearfix {
+    overflow: auto;
+}
+
+button {
+    background-color: #ff6b81; /* Pink button color */
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 5px; /* Rounded corners */
+}
+
+button:disabled {
+    background-color: #ab505e; /* Pink button color *//* Grey button color when disabled */
+    cursor: not-allowed;
+}
+
+
+.cute-form .signupbtn {
+    width: auto;
+    padding: 10px 18px;
+    background-color: #3c623c; /* Green button color */
+    color: white;
+    border: none;
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer;
+    float: center;
+}
+
+
+
+.cute-form .signupbtn:hover {
+    background-color: #1a3a34; /* Darker green on hover */
+}

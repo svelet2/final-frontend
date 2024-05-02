@@ -1,29 +1,70 @@
-ul.topnav {
-    list-style-type: none;
-    margin-top: 1%;
-    margin-bottom: 5%;
-    padding: 0;
-    overflow: hidden;
-    background-color: #ce6d47;
-  }
-  
-  ul.topnav li {float: left;}
-  
-  ul.topnav li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-  }
-  
-  ul.topnav li a:hover:not(.active) {background-color: #f8ebcb;}
-  
-  ul.topnav li a.active {background-color:#af412a; }
-  
-  ul.topnav li.right {float: right;}
-  
-  @media screen and (max-width: 600px) {
-    ul.topnav li.right, 
-    ul.topnav li {float: none;}
-  }
+body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .navbar {
+      background-color: #ffcccc; /* Pink background */
+      overflow: hidden;
+      padding: 10px 20px; /* Adjust padding as needed */
+    }
+
+    .navbar a {
+      float: left;
+      display: block;
+      color: #333; /* Dark grey text color */
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+
+    .navbar a:hover {
+      background-color: #ddd; /* Light grey background on hover */
+      color: #000; /* Black text color on hover */
+    }
+
+    .navbar .navbar-brand {
+      float: left;
+      font-size: 20px;
+      font-weight: bold;
+      color: #333; /* Dark grey text color */
+    }
+
+    .navbar .navbar-brand:hover {
+      background-color: transparent; /* Remove background color on hover */
+      color: #333; /* Dark grey text color */
+    }
+
+    .navbar .navbar-icons {
+      float: right;
+    }
+
+    .navbar .navbar-icons img {
+      width: 24px; /* Adjust icon size */
+      height: auto;
+      margin: 5px; /* Adjust spacing */
+    }
+
+      .filter-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background-color: #f0f0f0;
+    }
+    .filter-bar select, .filter-bar input {
+        margin-right: 10px;
+    }
+    .basket-icon {
+        position: relative;
+    }
+    .basket-count {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: rgb(186, 140, 192);
+        color: white;
+        border-radius: 50%;
+        padding: 5px;
+        font-size: 12px;
+    }

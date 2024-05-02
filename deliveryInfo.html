@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Delivery Information</title>
+    
+    <link rel="stylesheet" href="deliveryInfo.css">
+    <link rel="stylesheet" href="navbar.css">
+</head>
+<body>
+    <div class="navbar">
+        <a href="dashboard.html" class="navbar-brand">Brand</a>
+    </div>
+    <script src="configuration.js"></script>
+
+    <div class="tracker">
+        <ul>
+            <li>Review</li>
+            <li class="current">Delivery</li>
+            <li>Done</li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <div class="left-panel">
+            <img src="flower-image.jpg" alt="Flower Image">
+            <p>Delivery Date: <span id="delivery-date"></span></p>
+        </div>
+        <div class="right-panel">
+            <h1>Add Delivery Information</h1>
+
+            <div class="buttons">
+                <button type="button" id="signup-btn">Sign Up</button>
+                <button type="button" id="login-btn">Login</button>
+            </div>
+
+            <form id="delivery-form">
+                <h2>Order Information</h2>
+                <p>Flower Cost: <span id="flower-cost"></span></p>
+                <p>Flower Name: <span id="flower-name"></span></p>
+                <h2>Recipient Information</h2>
+                <label for="first-name">First Name:</label>
+                <input type="text" id="first-name" required>
+                <label for="last-name">Last Name:</label>
+                <input type="text" id="last-name" required>
+                <label for="relationship">Relationship:</label>
+                <select id="relationship" required>
+                    <option value="friend">Friend</option>
+                    <option value="family">Family</option>
+                    <option value="colleague">Colleague</option>
+                    <option value="girlfriend">Girlfriend</option>
+                    <option value="boyfriend">Boyfriend</option>
+                    <option value="spouse">Spouse</option>
+                </select>
+                <h2>Delivery Address</h2>
+                <label for="address">Address:</label>
+                <input type="text" id="address" required>
+                <label for="apt-suite">Apt/Suite:</label>
+                <input type="text" id="apt-suite">
+                <label for="city">City:</label>
+                <input type="text" id="city" required>
+                <label for="state">State:</label>
+                <input type="text" id="state" required>
+                <label for="zipcode">Zipcode:</label>
+                <input type="text" id="zipcode" required>
+                <button type="submit" id="continue-btn">Continue</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let host = "http://localhost:8080";
+        displayFlowerInfo();
+
+        function displayFlowerInfo() {
+            const basket = JSON.parse(localStorage.getItem('basket')) || [];
+            const deliveryInfo = basket[0];
+            const flower = deliveryInfo.flower;
+            console.log(flower)
+            document.getElementById('flower-cost').textContent = `$${flower.cost}`;
+            document.getElementById('flower-name').textContent = flower.name;
+            document.getElementById('delivery-date').textContent = deliveryInfo.deliveryDate;
+            console.log(deliveryInfo.deliveryDate)
+
+            const productImage = document.querySelector('.left-panel img');
+            productImage.src = `${host}/flowers/${flower.id}/image`; 
+            productImage.alt = flower.name;
+            productImage.style.width = '100%'; 
+            productImage.style.height = '100%'; 
+            productImage.style.objectFit = 'cover'; 
+        }
+        function pushToLocalStorage() {
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
+            const relationship = document.getElementById('relationship').value;
+            const address = document.getElementById('address').value;
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            const zipcode = document.getElementById('zipcode').value;
+            const aptSuite = document.getElementById('apt-suite').value || '';
+
+            if (firstName && lastName && relationship && address && city && state && zipcode) {
+                const recipientInfo = {
+                    firstName,
+                    lastName,
+                    relationship,
+                    address,
+                    city,
+                    state,
+                    zipcode,
+                    aptSuite
+                    }
+
+                localStorage.setItem('deliveryInfo', JSON.stringify(recipientInfo));
+            } 
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            document.getElementById('delivery-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                pushToLocalStorage();
+                console.log('Delivery Info:', JSON.parse(localStorage.getItem('deliveryInfo')));
+                window.location.href = 'placeDelivery.html';
+            });
+
+            // Handle button clicks
+            document.getElementById('signup-btn').addEventListener('click', function() {
+                pushToLocalStorage();
+                window.location.href = 'register.html';
+            });
+
+            document.getElementById('login-btn').addEventListener('click', function() {
+                window.location.href = 'login.html';
+            });
+        });
+    </script>
+</body>
+</html>

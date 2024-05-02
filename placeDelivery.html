@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Delivery Information</title>
+
+  <link rel="stylesheet" href="deliveryInfo.css">
+  <link rel="stylesheet" href="navbar.css">
+</head>
+<body>
+  <div class="navbar">
+    <a href="dashboard.html" class="navbar-brand">Brand</a>
+  </div>
+  <script src="configuration.js"></script>
+
+  <div class="tracker">
+    <ul>
+      <li>Review</li>
+      <li>Delivery</li>
+      <li class="current">Done</li>
+    </ul>
+  </div>
+
+  <div class="container">
+  <div class="left-panel">
+    <img src="flower-image.jpg" alt="Flower Image">
+  </div>
+    <div class="right-panel">
+
+    <form id="delivery-form">
+      <h2><span id="flower-name"></span></h2>
+      <hr>
+      <h3>Delivery Date</h3>
+      <label id="delivery-date">Delivery Date</label>
+      <h3>Item Pricing</h3>
+      <p id="flower-cost"></p>
+      <p id="discount-applied" style="display: none;">Discount Applied: $10</p>
+      <hr>
+      <h3>Delivery Address</h3>
+      <label id="name">First Name:</label>
+      <label id="address">Address:</label>
+      <label id="city">City:</label>
+      <hr>
+      <p>Shipping Addition: $25.00</p>
+      <p>Subtotal: $<span id="subtotal-value"></span></p>
+      <p id="discount-text" style="display: none;">Discount: -$10</p>
+      <p>Tax: $0.00</p>
+    
+      <hr>
+      <p>ORDER TOTAL: $<span id="final-cost"></span></p>
+      <button type="submit" id="continue-btn">Place Order</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    let host = "http://localhost:8080";
+    displayFlowerInfo();
+    displayRecipientInfo();
+
+    function displayRecipientInfo() {
+        const deliveryInfo = JSON.parse(localStorage.getItem('deliveryInfo')) || {};
+        console.log(deliveryInfo);
+        document.getElementById('name').textContent = `${deliveryInfo.firstName} ${deliveryInfo.lastName}`;
+        document.getElementById('address').textContent = `${deliveryInfo.address}, ${deliveryInfo.aptSuite}`;
+        document.getElementById('city').textContent = `${deliveryInfo.city}, ${deliveryInfo.state} ${deliveryInfo.zipcode}`;
+    }
+
+    function displayFlowerInfo() {
+        const basket = JSON.parse(localStorage.getItem('basket')) || [];
+        console.log(basket)
+        const deliveryInfo = basket[0];
+        const flower = deliveryInfo.flower;
+        console.log(flower)
+
+        let totalCost = flower.cost;
+        let discount = 0;
+        if (isLoggedIn()) {
+            discount = 10;
+            document.getElementById('discount-applied').style.display = 'block';
+            document.getElementById('discount-text').style.display = 'block';
+        }
+
+        const shippingFee = 25;
+        totalCost += shippingFee;
+        totalCost -= discount;
+
+        document.getElementById('flower-cost').textContent = `$${flower.cost.toFixed(2)}`;
+        document.getElementById('flower-name').textContent = flower.name;
+        document.getElementById('delivery-date').textContent = deliveryInfo.deliveryDate;
+        console.log(deliveryInfo.deliveryDate)
+
+        const productImage = document.querySelector('.left-panel img');
+        productImage.src = `${host}/flowers/${flower.id}/image`; 
+        productImage.alt = flower.name;
+        productImage.style.width = '100%'; 
+        productImage.style.height = '100%'; 
+        productImage.style.objectFit = 'cover'; 
+
+        document.getElementById('subtotal-value').textContent = totalCost.toFixed(2);
+        document.getElementById('final-cost').textContent = (totalCost).toFixed(2);
+    }
+
+    document.getElementById('delivery-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        // Save the order in the database with status "Submitted"
+        saveOrder();
+    });
+
+    function saveOrder() {
+        const orderDetails = {
+            // Add order details here
+            // For example:
+            flowerName: document.getElementById('flower-name').textContent,
+            deliveryDate: document.getElementById('delivery-date').textContent,
+            // Add recipient details, total cost, etc.
+            status: 'Submitted'
+        };
+
+        // Here, you should make an AJAX request to your server to save the order
+        // Example:
+        fetch('your-save-order-endpoint', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orderDetails)
+        })
+        .then(response => {
+            if (response.ok) {
+                // Order saved successfully
+                // You may redirect the user to a confirmation page
+                window.location.href = 'order-confirmation.html';
+            } else {
+                // Handle error
+                console.error('Failed to save order:', response.statusText);
+            }
+        })
+        .catch(error => {
+            console.error('Error saving order:', error);
+        });
+    }
+  </script>
+</body>
+</html>
