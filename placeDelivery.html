@@ -55,23 +55,13 @@
   </div>
 
   <script>
-    let host = "http://localhost:8080";
+    let host = getHost();
     displayFlowerInfo();
-    displayRecipientInfo();
-
-    function displayRecipientInfo() {
-        const deliveryInfo = JSON.parse(localStorage.getItem('deliveryInfo')) || {};
-        console.log(deliveryInfo);
-        document.getElementById('name').textContent = `${deliveryInfo.firstName} ${deliveryInfo.lastName}`;
-        document.getElementById('address').textContent = `${deliveryInfo.address}, ${deliveryInfo.aptSuite}`;
-        document.getElementById('city').textContent = `${deliveryInfo.city}, ${deliveryInfo.state} ${deliveryInfo.zipcode}`;
-    }
 
     function displayFlowerInfo() {
         const basket = JSON.parse(localStorage.getItem('basket')) || [];
         console.log(basket)
-        const deliveryInfo = basket[0];
-        const flower = deliveryInfo.flower;
+        const flower = basket.flower;
         console.log(flower)
 
         let totalCost = flower.cost;
@@ -100,6 +90,17 @@
 
         document.getElementById('subtotal-value').textContent = totalCost.toFixed(2);
         document.getElementById('final-cost').textContent = (totalCost).toFixed(2);
+
+        // Call displayRecipientInfo after displaying flower info
+        displayRecipientInfo();
+    }
+
+    function displayRecipientInfo() {
+        const deliveryInfo = JSON.parse(localStorage.getItem('deliveryInfo')) || {};
+        console.log(deliveryInfo);
+        document.getElementById('name').textContent = `${deliveryInfo.firstName} ${deliveryInfo.lastName}`;
+        document.getElementById('address').textContent = `${deliveryInfo.address}, ${deliveryInfo.aptSuite}`;
+        document.getElementById('city').textContent = `${deliveryInfo.city}, ${deliveryInfo.state} ${deliveryInfo.zipcode}`;
     }
 
     document.getElementById('delivery-form').addEventListener('submit', function(event) {

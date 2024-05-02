@@ -70,18 +70,26 @@
     </div>
 
     <script>
-        let host = "http://localhost:8080";
+        let host = getHost();
         displayFlowerInfo();
+        console.log('Is Logged In:', isLoggedIn());
+        if(isLoggedIn()){
+            document.getElementById('signup-btn').style.display = 'none';
+            document.getElementById('login-btn').style.display = 'none';
+        } else {
+            document.getElementById('signup-btn').style.display = 'block';
+            document.getElementById('login-btn').style.display = 'block';
+        }
 
         function displayFlowerInfo() {
             const basket = JSON.parse(localStorage.getItem('basket')) || [];
-            const deliveryInfo = basket[0];
-            const flower = deliveryInfo.flower;
+            console.log(basket);
+            const flower = basket.flower;
             console.log(flower)
             document.getElementById('flower-cost').textContent = `$${flower.cost}`;
             document.getElementById('flower-name').textContent = flower.name;
-            document.getElementById('delivery-date').textContent = deliveryInfo.deliveryDate;
-            console.log(deliveryInfo.deliveryDate)
+            document.getElementById('delivery-date').textContent = basket.deliveryDate;
+            console.log(basket.deliveryDate)
 
             const productImage = document.querySelector('.left-panel img');
             productImage.src = `${host}/flowers/${flower.id}/image`; 
@@ -125,13 +133,14 @@
                 window.location.href = 'placeDelivery.html';
             });
 
-            // Handle button clicks
+    
             document.getElementById('signup-btn').addEventListener('click', function() {
                 pushToLocalStorage();
                 window.location.href = 'register.html';
             });
 
             document.getElementById('login-btn').addEventListener('click', function() {
+                pushToLocalStorage();
                 window.location.href = 'login.html';
             });
         });

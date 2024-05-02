@@ -42,10 +42,11 @@
     </form>
   </div>
 </div>
+
 <script src="configuration.js"></script>
 
 <script>
-let host = "http://localhost:8080";
+let host = getHost();
 
 function getFlowerFromURL() {
     const queryString = window.location.search;
@@ -81,14 +82,13 @@ function updateBasketCount() {
     basketCount.textContent = basket.length;
 }
 
-// When the page loads, get the flower object from the URL and display its information
 document.addEventListener('DOMContentLoaded', function() {
     const flower = getFlowerFromURL();
     displayFlowerInfo(flower);
     updateBasketCount();
 
-    const form = document.getElementById('product-form');
-    form.addEventListener('submit', function(event) {
+    document.getElementById('product-form').addEventListener('submit', function(event) {
+        event.preventDefault();
         const selectedOption = document.querySelector('input[name="purchase-option"]:checked');
         if (!selectedOption) {
             alert('Please select a purchase option.');
@@ -101,16 +101,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 deliveryDate: deliveryDate,
                 purchaseOption: purchaseOption
             };
-
-            let basket = JSON.parse(localStorage.getItem('basket')) || [];
-            if (basket.length > 0) {
-                alert('You already have an item in your basket. Please complete your current purchase before adding another item.');
-            } else {
-                localStorage.setItem('basket', JSON.stringify(basketItem));
-                updateBasketCount();
-                window.location.href = 'deliveryInfo.html';
-            }
-
+            localStorage.setItem('basket', JSON.stringify(basketItem));
+            updateBasketCount();
+            window.location.href = 'deliveryInfo.html';
         }
     });
 });

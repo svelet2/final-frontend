@@ -8,14 +8,30 @@
   </head>
 
   <body>
-    <ul class="topnav">
-      <li><a class="active" href="index.html">Home</a></li>
-      <li><a href="add-question.html">Add questions</a></li>
-      <li><a href="make-a-quiz.html">Create a quiz</a></li>
-      <li><a href="take-a-quiz.html">Take a quiz</a></li>
-      <li class="right"><a href="#about">About</a></li>
-    </ul>
+    <div class="navbar">
+    <a href="dashboard.html" class="navbar-brand">Brand</a>
+    <div class="navbar-icons">
+      <a href="login.html">Login</a>
+      <a href="#">Help</a>
+      <a href="#">Track Order</a>
+      <a href="#" class="basket-icon">
+        <img src="basket-icon.png" alt="Basket" width="30">
+        <span class="basket-count">0</span>
+      </a>
+    </div>
+  </div>
 
+  <script>
+  function updateBasketCount() {
+        const basketCount = document.querySelector('.basket-count');
+        const basket = JSON.parse(localStorage.getItem('basket')) || [];
+        basketCount.textContent = basket.length;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        updateBasketCount();
+      });
+  </script>
    
   </body>
 </html>

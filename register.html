@@ -11,7 +11,7 @@
     <div class="navbar">
         <a href="dashboard.html" class="navbar-brand">Brand</a>
         <div class="navbar-icons">
-            <a href="#">Profile</a>
+            <a href="login.html">Login</a>
             <a href="#">Help</a>
             <a href="#">Track Order</a>
             <a href="#" class="basket-icon">
@@ -55,33 +55,38 @@
     <script src="configuration.js"></script>
     <script src="register.js"></script>
     <script>
+    function updateBasketCount() {
+          const basketCount = document.querySelector('.basket-count');
+          const basket = JSON.parse(localStorage.getItem('basket')) || [];
+          basketCount.textContent = basket.length;
+      }
+
      function checkDeliveryInfo() {
-            // Check if there is deliveryInfo in storage
             const deliveryInfo = localStorage.getItem('deliveryInfo');
             if (deliveryInfo) {
-                window.location.href = 'placeDelivery.html'; // Redirect to placeDelivery.html if deliveryInfo exists
+                window.location.href = 'placeDelivery.html'; 
             } else {
-                window.location.href = 'dashboard.html'; // Redirect to dashboard.html if deliveryInfo does not exist
+                window.location.href = 'dashboard.html'; 
             }
         }
-        // Function to disable the register button if on register page
+        document.addEventListener('DOMContentLoaded', function() {
+        updateBasketCount();
+      });
+      
         function disableRegisterButton() {
             const registerBtn = document.getElementById('registerBtn');
             registerBtn.disabled = true;
         }
 
-        // Function to redirect to register page
         function redirectToRegister() {
             disableRegisterButton();
             window.location.href = 'register.html';
         }
 
-        // Function to redirect to login page
         function redirectToLogin() {
             window.location.href = 'login.html';
         }
 
-        // Check if the current page is the register page and disable the register button if true
         if (window.location.pathname.includes('register.html')) {
             disableRegisterButton();
         }
